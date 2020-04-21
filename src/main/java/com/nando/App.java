@@ -8,8 +8,6 @@ abstract class Carro
     private String Matricula;
     private Boolean PicoyPlaca;
 
-    public Carro(){};
-
     public int getPasajeros(){
         return pasajeros;
     }
@@ -135,7 +133,6 @@ class FabricaElectricos extends Fabrica
 {
     @Override
     public Carro crearCarro(){
-        Scanner entradaTeclado=new Scanner(System.in);
         String entrada;
         System.out.println("Crear un carro electrico.");
         System.out.println("Ingrese la potencia del motor: ");
@@ -148,25 +145,20 @@ class FabricaElectricos extends Fabrica
         entrada=entradaTeclado.nextLine();
         carroelectrico.setMatricula(entrada);
         carroelectrico.SetPicoyPlaca(false);
-        entradaTeclado.close();
 
         return carroelectrico;
     }
 
     @Override
     public Moto crearMoto(){
-        Scanner entradaTeclado=new Scanner(System.in);
-        String entrada;
         System.out.println("Crear una moto electrica.");
         System.out.println("Ingrese la potencia del motor: ");
-        entrada=entradaTeclado.nextLine();
-        Moto motoelectrica=new MotoElectrica(Float.parseFloat(entrada));
+        Moto motoelectrica=new MotoElectrica(entradaTeclado.nextFloat());
+        entradaTeclado.nextLine();
         System.out.println("Ingrese la matricula: ");
-        entrada=entradaTeclado.nextLine();
-        motoelectrica.setMatricula(entrada);
+        motoelectrica.setMatricula(entradaTeclado.nextLine());
         motoelectrica.setPicoyPlaca(false);
         motoelectrica.setTipoMotor(tipoMotor.ELECTRICO);
-        entradaTeclado.close();
 
         return motoelectrica;
     }
@@ -176,50 +168,41 @@ class FabricaGasolina extends Fabrica
 {
     @Override
     public Carro crearCarro(){
-        Scanner entradaTeclado=new Scanner(System.in);
-        String entrada;
         System.out.println("Crear un carro a gasolina.");
         System.out.println("Ingrese el cilindraje del motor: ");
-        entrada=entradaTeclado.nextLine();
-        Carro carrogasolina=new CarroGasolina(Integer.parseInt(entrada));  
+        Carro carrogasolina=new CarroGasolina(entradaTeclado.nextInt());  
         System.out.println("Ingrese el numero de pasajeros: ");
-        entrada=entradaTeclado.nextLine();
-        carrogasolina.setPasajeros(Integer.parseInt(entrada));
+        carrogasolina.setPasajeros(entradaTeclado.nextInt());
         System.out.println("Ingrese la matricula: ");
-        entrada=entradaTeclado.nextLine();
-        carrogasolina.setMatricula(entrada);
+        carrogasolina.setMatricula(entradaTeclado.nextLine());
         carrogasolina.SetPicoyPlaca(false);
-        entradaTeclado.close();
 
         return carrogasolina;
     }
 
     @Override
     public Moto crearMoto(){
-        Scanner entradaTeclado=new Scanner(System.in);
-        String entrada;
         System.out.println("Crear una moto a gasolina.");
         System.out.println("Ingrese el cilindraje del motor: ");
-        entrada=entradaTeclado.nextLine();
-        Moto motogasolina=new MotoGasolina(Integer.parseInt(entrada));
+        Moto motogasolina=new MotoGasolina(entradaTeclado.nextInt());
+        entradaTeclado.nextLine();
         System.out.println("Ingrese la matricula: ");
-        entrada=entradaTeclado.nextLine();
-        motogasolina.setMatricula(entrada);
-        motogasolina.setPicoyPlaca(false);
+        motogasolina.setMatricula(entradaTeclado.nextLine());
         int opcion=0;
         do{
             System.out.println("Elija una opcion: ");
             System.out.println("1. Motor cuatro tiempos.");
             System.out.println("2. Motor dos tiempos.");
             opcion=entradaTeclado.nextInt();
-        }while(opcion!=1 || opcion!=2);
+        }while(opcion!=1 && opcion!=2);
         if(opcion==1){
             motogasolina.setTipoMotor(tipoMotor.CUATROT);
+            motogasolina.setPicoyPlaca(false);
         }
         else{
             motogasolina.setTipoMotor(tipoMotor.DOST);
+            motogasolina.setPicoyPlaca(true);
         }
-        entradaTeclado.close();
 
         return motogasolina;
     }
@@ -230,7 +213,8 @@ enum Artefacto{
 }
 
 abstract class Fabrica 
-{
+{   
+    Scanner entradaTeclado=new Scanner(System.in);
     private static final FabricaGasolina Objetos_gasolina= new FabricaGasolina();
     private static final FabricaElectricos Objetos_electricos= new FabricaElectricos();
 
@@ -257,7 +241,7 @@ public class App
 {
     public static void main( String[] args )
     {
-        Fabrica fabrica=Fabrica.obtenerTipoFabricacion(Artefacto.ELECTRICO);
+        Fabrica fabrica=Fabrica.obtenerTipoFabricacion(Artefacto.GASOLINA);
         Moto honda=fabrica.crearMoto();
         System.out.println("Los datos de la moto son: ");
         System.out.println("Tipo motor: " + honda.getTipoMotor());
@@ -268,5 +252,7 @@ public class App
         else{
             System.out.println("Tiene pico y placa");
         }
+        fabrica=Fabrica.obtenerTipoFabricacion(Artefacto.ELECTRICO);
+        honda=fabrica.crearMoto();
     }
 }
